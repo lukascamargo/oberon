@@ -35,6 +35,7 @@ tramp
 # cask packages
 .cask/
 dist/
+*.todo
 
 # Flycheck
 flycheck_*.el
