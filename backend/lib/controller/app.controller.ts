@@ -1,6 +1,6 @@
 import { Controller } from '@decorators/express';
 import { Request, Response } from 'express';
-import { ApiPath } from 'swagger-express-ts';
+import { ApiOperationGet, ApiPath } from 'swagger-express-ts';
 
 @ApiPath({
     path: '',
@@ -10,6 +10,15 @@ import { ApiPath } from 'swagger-express-ts';
 export class AppController {
     constructor() { }
 
+    @ApiOperationGet({
+        description: 'This route will check is the record service is alive',
+        summary: 'Is Alive Route',
+        path: '/isAlive',
+        responses: {
+            200: {description: 'The service is alive'},
+            500: {description: 'The service is not alive'},
+        },
+    })
     public isAlive(req: Request, res: Response) {
         res.json({
             message: 'Is Alive',

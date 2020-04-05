@@ -1,5 +1,6 @@
 import { DatabaseConnection } from '@config/database';
 import AppRoutes from '@routes/app.routes';
+import UserRoutes from '@routes/user.routes';
 import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
 import * as dotenv from 'dotenv';
@@ -14,7 +15,7 @@ import * as swagger from 'swagger-express-ts';
 class App {
     /** Create public app to receive Express Application */
     public app: express.Application;
-    databaseConnection : DatabaseConnection;
+    databaseConnection: DatabaseConnection;
     mongo_uri = '';
 
     /** In constructor, are called all methods */
@@ -35,26 +36,27 @@ class App {
         // tslint:disable-next-line: deprecation
         this.app.use(bodyParser.urlencoded({extended: false}));
 
-        // this.app.use(cors({
-        //     'origin': '*',
-        //     'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-        // }));
+        this.app.use(cors({
+            origin: '*',
+            methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+        }));
     }
 
     /** Here are set up mongo connection */
     public _mongoSetup(): void {
-        if(process.env.NODE_ENV !== 'TEST') {
+        // if (process.env.NODE_ENV !== 'TEST') {
             this.databaseConnection = new DatabaseConnection();
             this.databaseConnection.mongoSetup();
-        }
+        // }
     }
 
     /** Here are set up all app routes, see [Routes]{@link Routes} to more details */
     public _routes(): void {
         this.app.use('/', AppRoutes);
+        this.app.use('/user', UserRoutes);
     }
 
-    /** Here are set up all swagger, see more details in [Swegger](http://localhost:3008/api-docs/swagger) */
+    /** Here are set up all swagger, see more details in [Swagger](http://localhost:3008/api-docs/swagger) */
     private _configSwagger(): void {
         this.app.use('/api-docs/swagger', express.static(path.join('swagger')));
         this.app.use('/api-docs/swagger/assets', express.static('node_modules/swagger-ui-dist'));
