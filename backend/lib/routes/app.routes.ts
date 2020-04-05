@@ -1,19 +1,18 @@
-import {Routes} from '@routes/routes';
+import { AppController } from '@controller/app.controller';
+import { Routes } from '@routes/routes';
 
 class AppRoutes extends Routes {
+
+    private _appController: AppController = new AppController();
 
     constructor() {
         super();
     }
 
-    protected _init() {
+    init() {
         this.router
             .route('/isAlive')
-                .get((req, res) => {
-                    res.json({
-                    message: 'Is Alive',
-                });
-        });
+            .get(this._appController.isAlive.bind(this._appController));
     }
 }
 

@@ -1,3 +1,4 @@
+import { DatabaseConnection } from '@config/database';
 import AppRoutes from '@routes/app.routes';
 import * as bodyParser from 'body-parser';
 import * as cors from 'cors';
@@ -7,13 +8,13 @@ import * as mongoose from 'mongoose';
 import * as logger from 'morgan';
 import * as path from 'path';
 import * as swagger from 'swagger-express-ts';
-
 /**
  * This is a main App config
  */
 class App {
     /** Create public app to receive Express Application */
     public app: express.Application;
+    databaseConnection : DatabaseConnection;
     mongo_uri = '';
 
     /** In constructor, are called all methods */
@@ -42,18 +43,10 @@ class App {
 
     /** Here are set up mongo connection */
     public _mongoSetup(): void {
-        (mongoose as any).Promise = global.Promise;
-        mongoose.set('useFindAndModify', false);
-        mongoose.connect(this.mongo_uri, {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true});
-        mongoose.connection.on('connected', () => console.log('Connected with MongoDB'));
-        mongoose.connection.on('error', (error) => console.log('Error on connection. ' + error));
-        mongoose.connection.on('disconnected', () => console.log('Disconnected from MongoDB'));
-        process.on('SIGINT', () => {
-            mongoose.connection.close(() => {
-                console.log('connection with MongoDB closed.');
-                process.exit(0);
-            });
-        });
+        if(process.env.NODE_ENV !== 'TEST') {
+            this.databaseConnection = new DatabaseConnection();
+            this.databaseConnection.mongoSetup();
+        }
     }
 
     /** Here are set up all app routes, see [Routes]{@link Routes} to more details */
@@ -68,21 +61,21 @@ class App {
         this.app.use(swagger.express({
             definition : {
                 info : {
-                    title : 'Appointment Micro Service' ,
+                    title : 'Test here the application APIs' ,
                     version : '1.0',
                 } ,
                 externalDocs : {
-                    url : `localhost:${process.env.PORT}/api-docs/swagger`,
+                    url : `${process.env.APP}:${process.env.PORT}/api-docs/swagger`,
                 },
                 securityDefinitions : {
                     Bearer : {
                         type : 'apiKey',
                         in : 'header',
                         name : 'Authorization',
-                    }
+                    },
                 },
                 basePath: '/',
-            }
+            },
         }));
     }
 

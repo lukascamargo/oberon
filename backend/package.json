@@ -22,6 +22,7 @@
   "dependencies": {
     "@decorators/di": "^1.0.2",
     "@decorators/express": "^2.3.0",
+    "@shelf/jest-mongodb": "^1.1.5",
     "@types/mongoose": "^5.7.8",
     "async": "^2.6.2",
     "cors": "^2.8.5",
@@ -70,6 +71,8 @@
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",
     "jest": "^25.2.6",
+    "mockgoose": "^8.0.4",
+    "mongodb-memory-server": "^6.5.1",
     "supertest": "^4.0.2",
     "ts-jest": "^25.3.0"
   }

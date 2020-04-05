@@ -6,9 +6,9 @@ export abstract class Routes {
 
     constructor() {
         this.router = Router();
-        this._init();
+        this.init();
     }
 
-    protected _init() { /* You should implement your routes here */  }
+    protected init() {  /* You should implement your routes here */ }
 
 }
