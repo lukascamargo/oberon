@@ -1,10 +1,10 @@
-# OBERON
+# Ready to Code NodeJS Backend
 
 ## About
 
-This is a project yet with generic name (it is a planet name).
+This is a project to facilitate software development. To use it you should clone the project and then change the git url to what your project is going to use. 
 
-The project goal is to help Personal Trainers to share easily their exercise plan with their students. 
+In the future we may use NPM to install this project, change its name and change its git url. 
 
 ## Installation
 
