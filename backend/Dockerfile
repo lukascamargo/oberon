@@ -5,13 +5,11 @@ ENV NODE_ENV=PROD
 
 COPY ./package.json /var/www/
 COPY ./swagger/ /var/www/swagger/
-COPY ./.env.dev /var/www/
-COPY ./.env.qa /var/www/
-COPY ./node_modules /var/www/node_modules
-
-RUN date
+COPY ./.env.prod /var/www/
 
 WORKDIR /var/www/
+RUN npm install
+RUN tsc
 
 ENTRYPOINT npm run prod
-EXPOSE 3004
+EXPOSE 80
