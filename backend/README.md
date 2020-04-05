@@ -1,5 +1,11 @@
 # Ready to Code NodeJS Backend
 
+## About
+
+This is a project to facilitate software development. To use it you should clone the project and then change the git url to what your project is going to use. 
+
+In the future we may use NPM to install this project, change its name and change its git url. 
+
 ## Installation
 
 Hey there.
