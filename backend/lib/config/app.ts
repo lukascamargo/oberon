@@ -2,6 +2,7 @@ import { DatabaseConnection } from '@config/database';
 import AppRoutes from '@routes/app.routes';
 import UserRoutes from '@routes/user.routes';
 import * as bodyParser from 'body-parser';
+import { errors } from 'celebrate';
 import * as cors from 'cors';
 import * as dotenv from 'dotenv';
 import * as express from 'express';
@@ -30,7 +31,7 @@ class App {
 
     /** Here, are set up Cors, Debug log and bodyParser */
     public _config(): void {
-        // this.app.use(logger('dev'));
+        this.app.use(logger('dev'));
         // tslint:disable-next-line: deprecation
         this.app.use(bodyParser.json());
         // tslint:disable-next-line: deprecation
@@ -54,6 +55,7 @@ class App {
     public _routes(): void {
         this.app.use('/', AppRoutes);
         this.app.use('/user', UserRoutes);
+        this.app.use(errors());
     }
 
     /** Here are set up all swagger, see more details in [Swagger](http://localhost:3008/api-docs/swagger) */

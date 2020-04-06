@@ -1,29 +1,26 @@
+// tslint:disable-next-line: ordered-imports
 import { getModelForClass } from '@typegoose/typegoose';
-import {MongoMemoryServer} from 'mongodb-memory-server';
+import * as dotenv from 'dotenv';
 import * as mongoose from 'mongoose';
 import { IUser, IUserRegister, UserSchema } from '../../../schema/user';
 import {UserService} from '../../../service/user/user.service';
+import DatabaseConnection from '../../databaseConnection';
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 600000;
 let mongod;
 
+beforeAll(() => {
+    dotenv.config();
+});
+
 beforeAll(async () => {
-    mongod = new MongoMemoryServer();
-    const mongoUri = await mongod.getUri();
-    await mongoose.connect(mongoUri, {
-        useNewUrlParser: true,
-    }, (err) => {
-        if (err) {
-            console.log(err);
-            process.exit(1);
-        }
-    });
+    mongod = await DatabaseConnection.mongod;
 });
 
 afterAll(async () => {
     const userSchema = getModelForClass(UserSchema);
     await userSchema.deleteMany({});
-    await mongoose.disconnect();
+    await DatabaseConnection.disconnect();
     await mongod.stop();
 });
 
@@ -45,9 +42,19 @@ describe('Users CRUD', () => {
 
     it('should create an user', async () => {
 
-        const {email, password, firstName, lastName, displayName, isTrainer} = await userService.store(user);
+        const {email, firstName, lastName, displayName, isTrainer, active} = await userService.update(user);
 
-        expect({email, password, firstName, lastName, displayName, isTrainer}).toEqual(user);
+        const expectToBe = {
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            displayName: user.displayName,
+            isTrainer: user.isTrainer,
+            active: user.active,
+        };
+
+        expect({email, firstName, lastName, displayName, isTrainer, active})
+        .toEqual(expectToBe);
 
     });
 
@@ -58,16 +65,24 @@ describe('Users CRUD', () => {
 
     });
 
+    it('should retrieve the same user as the earlier test but now checking if the password is different', async () => {
+        const index: IUser[] = await userService.index();
+
+        console.log(JSON.stringify(index[0]));
+
+        expect(index[0].password).not.toEqual(user.password);
+    });
+
     it('should update the user created in the first test', async () => {
         user.lastName = 'Camargo';
-        const store: IUser = await userService.store(user);
+        const store: IUser = await userService.update(user);
 
         expect(store.lastName).toBe(user.lastName);
     });
 
     it('should inactivate the user created in the first test', async () => {
         user.active = false;
-        const inactivate: IUser[] = await userService.store(user);
+        const inactivate: IUser = await userService.update(user);
 
         expect(inactivate.active).toBe(user.active);
     });
@@ -75,12 +90,12 @@ describe('Users CRUD', () => {
     it('should not bring any users since in the last test we inactivated the user created in first test', async () => {
         const index: IUser[] = await userService.index();
 
-        expect(index).toBe([]);
+        expect(index).toEqual([]);
     });
 
     it('should delete from the database an user by id', async () => {
         const deleteUser = await userService.delete(user._id);
 
-        expect(deleteUser).toBe(true);
+        expect(deleteUser).toEqual(null);
     });
 });

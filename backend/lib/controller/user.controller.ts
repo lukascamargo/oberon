@@ -13,13 +13,44 @@ export class UserController {
         private _userService = new UserService(),
     ) { }
 
-    public store(req: Request, res: Response) {
-        this._userService.store(req.body)
+    public index(req: Request, res: Response) {
+        this._userService.index()
             .then((response) => {
                 res.json(response);
             })
             .catch((error) => {
-                res.json(error);
+                res.status(500).json(error);
             });
     }
+
+    public store(req: Request, res: Response) {
+        this._userService.update(req.body)
+            .then((response) => {
+                res.json(response);
+            })
+            .catch((error) => {
+                res.status(500).json(error);
+            });
+    }
+
+    public update(req: Request, res: Response) {
+        this._userService.update(req.body)
+            .then((response) => {
+                res.json(response);
+            })
+            .catch((error) => {
+                res.status(500).json(error);
+            });
+    }
+
+    public delete(req: Request, res: Response) {
+        this._userService.delete(req.params.id)
+            .then((response) => {
+                res.json(response);
+            })
+            .catch((error) => {
+                res.status(500).json(error);
+            });
+    }
+
 }

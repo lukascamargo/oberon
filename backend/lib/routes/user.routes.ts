@@ -1,5 +1,6 @@
 import { UserController } from '@controller/user.controller';
 import { Routes } from '@routes/routes';
+import { celebrate, Segments, Joi } from 'celebrate';
 
 class UserRoutes extends Routes {
 
@@ -17,8 +18,22 @@ class UserRoutes extends Routes {
 
     init() {
         this.router
+            .route('/index')
+            .get(this._controller.index.bind(this._controller));
+
+        this.router
             .route('/store')
-            .post(this._controller.store.bind(this._controller));
+            .post(celebrate({
+                [Segments.BODY]: Joi.object().keys({
+                    email: Joi.string().required(),
+                    password: Joi.string().required(),
+                    firstName: Joi.string().required(),
+                    lastName: Joi.string().required(),
+                    displayName: Joi.string().required(),
+                    isTrainer: Joi.boolean().required(),
+                    active: Joi.boolean().required(),
+                }),
+            }), this._controller.store.bind(this._controller));
     }
 }
 
