@@ -1,4 +1,4 @@
-import { AppController } from '@controller/app.controller';
+import { AppController } from '@controller/AppController';
 import { Routes } from '@routes/routes';
 
 class AppRoutes extends Routes {

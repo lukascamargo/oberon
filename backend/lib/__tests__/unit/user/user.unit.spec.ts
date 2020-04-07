@@ -3,7 +3,7 @@ import { getModelForClass } from '@typegoose/typegoose';
 import * as dotenv from 'dotenv';
 import * as mongoose from 'mongoose';
 import { IUser, IUserRegister, UserSchema } from '../../../schema/user';
-import {UserService} from '../../../service/user/user.service';
+import {UserService} from '../../../service/user/UserService';
 import DatabaseConnection from '../../databaseConnection';
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 600000;

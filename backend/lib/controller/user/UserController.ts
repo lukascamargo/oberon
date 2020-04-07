@@ -1,5 +1,5 @@
 import { Controller } from '@decorators/express';
-import { UserService } from '@service/user/user.service';
+import { UserService } from '@service/user/UserService';
 import { Request, Response } from 'express';
 import { ApiOperationGet, ApiOperationPost, ApiPath } from 'swagger-express-ts';
 
@@ -49,6 +49,7 @@ export class UserController {
                 res.json(response);
             })
             .catch((error) => {
+                console.log(error);
                 res.status(500).json(error);
             });
     }

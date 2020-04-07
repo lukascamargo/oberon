@@ -36,43 +36,56 @@ describe('Integration test at Users Controller', () => {
 
     it('should create an user', async (done) => {
         request(app)
-            .post('/user/store')
+            .post('/user/create')
             .send(user)
             .expect(200, done);
     });
 
     it('shouldnt receive 200 when creating an user', async (done) => {
         request(app)
-            .post('/user/store')
+            .post('/user/create')
             .expect(400, done);
     });
 
     it('shouldnt receive 200 when creating an user because it is missing several properties', async (done) => {
         request(app)
-            .post('/user/store')
+            .post('/user/create')
             .send({status: 'teste'})
             .expect(400, done);
     });
 
-    // it('should bring the user created in the first test', async (done) => {
-    //     request(app)
-    //         .get('/user/index')
-    //         .expect(200);
-    //         // .end((error, response) => {
-    //         //     if (error) { return done(error); }
-
-    //         //     expect(response.body[0].email).toEqual('lukas.fialho@gmail.com');
-    //         // });
-    // });
     it('should bring all the users', async (done) => {
         request(app)
             .get('/user/index')
-            .expect(200, done)
+            .expect(200)
             .end((error, response) => {
-                if (error) { return done(error); }
-                const resposta = JSON.stringify(response);
-                console.log(resposta);
-                expect(resposta).toEqual('lukas.fialho@gmail.com');
+                if (error && error.statusCode !== 200) { console.log(error); return done(error); }
+                const resposta = response.body;
+                user._id = resposta[0]._id;
+                expect(resposta[0].email).toEqual('lukas.fialho@gmail.com');
+                done();
+            });
+    });
+
+    it('should update the user last name', async (done) => {
+        user.lastName = 'Camargo';
+        request(app)
+            .put('/user/edit')
+            .send(user)
+            .expect(200)
+            .end((error) => {
+                console.log(error);
+                done();
+            });
+    });
+
+    it('should delete the user created', async (done) => {
+        request(app)
+            .delete(`/user/delete/${user._id}`)
+            .expect(200)
+            .end((error) => {
+                console.log(error);
+                done();
             });
     });
 

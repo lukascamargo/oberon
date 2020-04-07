@@ -1,4 +1,4 @@
-import { UserController } from '@controller/user.controller';
+import { UserController } from '@controller/user/UserController';
 import { Routes } from '@routes/routes';
 import { celebrate, Segments, Joi } from 'celebrate';
 
@@ -22,7 +22,7 @@ class UserRoutes extends Routes {
             .get(this._controller.index.bind(this._controller));
 
         this.router
-            .route('/store')
+            .route('/create')
             .post(celebrate({
                 [Segments.BODY]: Joi.object().keys({
                     email: Joi.string().required(),
@@ -34,6 +34,23 @@ class UserRoutes extends Routes {
                     active: Joi.boolean().required(),
                 }),
             }), this._controller.store.bind(this._controller));
+
+        this.router
+            .route('/edit')
+            .put(celebrate({
+                [Segments.BODY]: Joi.object().keys({
+                    email: Joi.string().required(),
+                }).unknown(),
+            }), this._controller.update.bind(this._controller));
+
+        this.router
+            .route('/delete/:id')
+            .delete(celebrate({
+                [Segments.PARAMS] : {
+                    id: Joi.string().required(),
+                },
+            }), this._controller.delete.bind(this._controller));
+
     }
 }
 
